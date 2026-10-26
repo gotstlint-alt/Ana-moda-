@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ana Moda | Elegância e Estilo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap');
+
+        :root {
+            --primary: #6b21a8; /* Roxo Elegante */
+            --bg: #ffffff;      /* Fundo Branco */
+            --text: #333333;
+            --card-bg: #fafafa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; }
+
+        /* HEADER */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; background: rgba(255,255,255,0.9); position: fixed; width: 100%; top: 0; z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.1); backdrop-filter: blur(10px); }
+        .logo { font-size: 26px; letter-spacing: 2px; cursor: pointer; user-select: none; color: var(--primary); text-transform: uppercase; font-weight: bold; }
+        nav a { color: var(--text); text-decoration: none; margin-left: 20px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        nav a:hover { color: var(--primary); }
+
+        /* HERO */
+        .hero { height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; position: relative; }
+        .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #e5e5e5; z-index: -1; background-image: url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2000&auto=format&fit=crop'); background-size: cover; background-position: center; opacity: 0.8; }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.4); z-index: -1; }
+        .hero h1 { font-size: 54px; margin-bottom: 20px; line-height: 1.1; color: var(--primary); }
+        .hero p { font-size: 18px; margin-bottom: 40px; font-weight: 400; max-width: 600px; color: #111; }
+        .btn { padding: 16px 40px; background: var(--primary); color: #fff; font-weight: 600; text-decoration: none; text-transform: uppercase; letter-spacing: 2px; font-size: 14px; transition: 0.3s; border: none; cursor: pointer; border-radius: 4px; }
+        .btn:hover { filter: brightness(1.2); }
+
+        /* GRID DE PRODUTOS */
+        .section { padding: 100px 5%; text-align: center; }
+        .section-title { font-size: 42px; margin-bottom: 60px; color: var(--primary); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; }
+        .card { background: var(--card-bg); text-align: left; padding-bottom: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        
+        .img-box { width: 100%; height: 400px; background: #e0e0e0; position: relative; overflow: hidden; cursor: pointer; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .img-placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; color: #888; font-size: 14px; text-align: center; padding: 20px; border: 2px dashed #bbb; }
+
+        .card-info { padding: 25px; }
+        .card-info h3 { font-size: 22px; margin-bottom: 10px; color: var(--text); }
+        .card-info p { color: var(--primary); font-size: 20px; font-weight: 600; margin-bottom: 20px; }
+        
+        /* OPÇÕES DE TAMANHO E COR */
+        .opcoes { display: flex; gap: 10px; margin-bottom: 20px; }
+        .opcoes select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Montserrat', sans-serif; background: #fff; color: #333; flex: 1; }
+
+        .btn-wa { display: block; padding: 14px; background: var(--primary); color: #fff; text-decoration: none; text-align: center; border: none; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; }
+        .btn-wa:hover { filter: brightness(1.2); }
+
+        /* PAINEL ADMIN */
+        #adminBar { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: var(--primary); color: #fff; padding: 15px; text-align: center; font-weight: bold; z-index: 9999; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
+        #adminBar button { padding: 10px 20px; background: #fff; color: var(--primary); border: none; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
+        .edit-mode [contenteditable="true"] { border: 1px dashed var(--primary); padding: 5px; background: rgba(107,33,168,0.1); outline: none; }
+        .edit-mode .img-box { border: 2px dashed var(--primary); }
+        
+        .controls { display: none; margin-top: 15px; background: #fff; padding: 10px; border-radius: 4px; width: 100%; max-width: 400px; }
+        .edit-mode .controls { display: block; }
+        .controls label { font-size: 12px; display: block; margin-bottom: 5px; color: #333; text-align: left; }
+        .controls input[type="color"] { width: 100%; height: 40px; border: none; cursor: pointer; background: transparent; }
+    </style>
+</head>
+<body>
+
+<header>
+    <!-- 10 cliques no logo para abrir o painel -->
+    <div class="logo" onclick="abrirAdmin()">Ana <span>Moda</span></div>
+    <nav><a href="#colecao">Coleção</a> <a href="#contato">Contato</a></nav>
+</header>
+
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <h1 contenteditable="false" class="edit-text">Elegância que veste você.</h1>
+    <p contenteditable="false" class="edit-text">Descubra a nova coleção exclusiva de verão. Peças únicas para momentos inesquecíveis.</p>
+    <a href="#colecao" class="btn edit-text" contenteditable="false">Explorar Coleção</a>
+</section>
+
+<section class="section" id="colecao">
+    <h2 class="section-title edit-text" contenteditable="false">Nossos Destaques</h2>
+    <div class="grid">
+        <!-- PRODUTO 1 -->
+        <div class="card">
+            <div class="img-box" onclick="triggerUpload(this)">
+                <img src="" alt="Produto 1" class="upload-img">
+                <div class="img-placeholder">Clique para adicionar a foto</div>
+            </div>
+            <div class="card-info">
+                <h3 contenteditable="false" class="edit-text">Vestido Elegance</h3>
+                <p contenteditable="false" class="edit-text">R$ 189,90</p>
+                
+                <div class="opcoes">
+                    <select class="tamanho">
+                        <option value="P">Tam: P</option>
+                        <option value="M">Tam: M</option>
+                        <option value="G">Tam: G</option>
+                        <option value="GG">Tam: GG</option>
+                    </select>
+                    <select class="cor">
+                        <option value="Roxo">Cor: Roxo</option>
+                        <option value="Branco">Cor: Branco</option>
+                    </select>
+                </div>
+                
+                <button class="btn-wa" onclick="comprar(this)">Comprar via WhatsApp</button>
+            </div>
+        </div>
+
+        <!-- PRODUTO 2 -->
+        <div class="card">
+            <div class="img-box" onclick="triggerUpload(this)">
+                <img src="" alt="Produto 2" class="upload-img">
+                <div class="img-placeholder">Clique para adicionar a foto</div>
+            </div>
+            <div class="card-info">
+                <h3 contenteditable="false" class="edit-text">Conjunto Alfaiataria</h3>
+                <p contenteditable="false" class="edit-text">R$ 249,90</p>
+                
+                <div class="opcoes">
+                    <select class="tamanho">
+                        <option value="P">Tam: P</option>
+                        <option value="M">Tam: M</option>
+                        <option value="G">Tam: G</option>
+                    </select>
+                    <select class="cor">
+                        <option value="Branco">Cor: Branco</option>
+                        <option value="Roxo">Cor: Roxo</option>
+                    </select>
+                </div>
+                
+                <button class="btn-wa" onclick="comprar(this)">Comprar via WhatsApp</button>
+            </div>
+        </div>
+
+        <!-- PRODUTO 3 -->
+        <div class="card">
+            <div class="img-box" onclick="triggerUpload(this)">
+                <img src="" alt="Produto 3" class="upload-img">
+                <div class="img-placeholder">Clique para adicionar a foto</div>
+            </div>
+            <div class="card-info">
+                <h3 contenteditable="false" class="edit-text">Blusa de Seda</h3>
+                <p contenteditable="false" class="edit-text">R$ 129,90</p>
+                
+                <div class="opcoes">
+                    <select class="tamanho">
+                        <option value="Único">Tam: Único</option>
+                    </select>
+                    <select class="cor">
+                        <option value="Roxo">Cor: Roxo</option>
+                        <option value="Branco">Cor: Branco</option>
+                    </select>
+                </div>
+                
+                <button class="btn-wa" onclick="comprar(this)">Comprar via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer style="background: var(--primary); color: white; padding: 40px; text-align: center;">
+    <h2>Ana Moda</h2>
+    <p style="margin-top: 10px; opacity: 0.8;">Siga no Instagram: @anamoda</p>
+</footer>
+
+<!-- Input invisível para upload de fotos -->
+<input type="file" id="fileInput" accept="image/*" style="display:none;">
+
+<!-- BARRA DE ADMIN -->
+<div id="adminBar">
+    <span>⚠️ MODO ADMIN (10 CLIQUES)</span>
+    <button onclick="salvarTudo()">Salvar Alterações</button>
+    <button onclick="sairAdmin()">Sair</button>
+    
+    <div class="controls">
+        <label>Cor Principal (Botões e Títulos)</label>
+        <input type="color" id="colorPrimary" onchange="mudarCor('--primary', this.value)">
+        
+        <label>Cor de Fundo</label>
+        <input type="color" id="colorBg" onchange="mudarCor('--bg', this.value)">
+    </div>
+</div>
+
+<script>
+    let cliquesLogo = 0;
+    let editMode = false;
+    let targetImgBox = null;
+    
+    // ⚠️ TROQUE AQUI PELO WHATSAPP DA SUA VÓ (Formato: 5511999999999)
+    const WHATSAPP_NUMERO = "5511999999999"; 
+
+    function abrirAdmin() {
+        cliquesLogo++;
+        if (cliquesLogo === 10) { // 10 cliques
+            cliquesLogo = 0;
+            let senha = prompt("Senha de Administrador:");
+            if (senha === "ana123") { // SENHA AQUI
+                ativarEdicao();
+            } else { alert("Senha incorreta."); }
+        }
+        setTimeout(() => { cliquesLogo = 0; }, 3000); // 3 segundos para clicar 10 vezes
+    }
+
+    function ativarEdicao() {
+        editMode = true;
+        document.body.classList.add('edit-mode');
+        document.getElementById('adminBar').style.display = 'flex';
+        
+        document.querySelectorAll('.edit-text').forEach(el => {
+            el.setAttribute('contenteditable', 'true');
+        });
+        
+        let root = getComputedStyle(document.documentElement);
+        document.getElementById('colorPrimary').value = rgbToHex(root.getPropertyValue('--primary').trim());
+        document.getElementById('colorBg').value = rgbToHex(root.getPropertyValue('--bg').trim());
+        
+        alert("Modo de edição ativado! Clique nos textos, nas fotos e mude as cores.");
+    }
+
+    function triggerUpload(box) {
+        if (!editMode) return;
+        targetImgBox = box;
+        document.getElementById('fileInput').click();
+    }
+
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        let file = event.target.files[0];
+        if (file && targetImgBox) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let img = targetImgBox.querySelector('img');
+                let placeholder = targetImgBox.querySelector('.img-placeholder');
+                img.src = e.target.result;
+                img.style.display = 'block';
+                placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function mudarCor(variavel, valor) {
+        document.documentElement.style.setProperty(variavel, valor);
+    }
+
+    function rgbToHex(rgb) {
+        if (!rgb.startsWith('rgb')) return rgb;
+        let a = rgb.split("(")[1].split(")")[0].split(",");
+        return "#" + a.map(function(x) {
+            x = parseInt(x).toString(16);
+            return (x.length == 1) ? "0" + x : x;
+        }).join("");
+    }
+
+    function salvarTudo() {
+        let dados = {
+            textos: Array.from(document.querySelectorAll('.edit-text')).map(el => el.innerHTML),
+            fotos: Array.from(document.querySelectorAll('.upload-img')).map(img => img.src),
+            corPrimary: document.getElementById('colorPrimary').value,
+            corBg: document.getElementById('colorBg').value
+        };
+        
+        try {
+            localStorage.setItem('anaModaPremium', JSON.stringify(dados));
+            alert("Site salvo com sucesso!");
+            sairAdmin();
+        } catch (e) {
+            alert("Erro: As fotos são muito grandes (Limite de 5MB). Tente fotos menores.");
+        }
+    }
+
+    function sairAdmin() {
+        editMode = false;
+        document.body.classList.remove('edit-mode');
+        document.getElementById('adminBar').style.display = 'none';
+        document.querySelectorAll('.edit-text').forEach(el => el.setAttribute('contenteditable', 'false'));
+    }
+    
+    // LÓGICA DO CHECKOUT DO WHATSAPP
+    function comprar(btn) {
+        if(editMode) return; // Não compra no modo de edição
+        
+        let card = btn.closest('.card-info');
+        let nome = card.querySelector('h3').innerText;
+        let preco = card.querySelector('p').innerText;
+        let tamanho = card.querySelector('.tamanho').value;
+        let cor = card.querySelector('.cor').value;
+        
+        // Monta a mensagem
+        let msg = `Olá! Vi o site da Ana Moda e quero comprar a peça:%0A%0A*${nome}*%0ATamanho: *${tamanho}*%0ACor: *${cor}*%0AValor: *${preco}*%0A%0AVou pagar via Pix. Me passa a chave?`;
+        
+        // Abre o WhatsApp
+        window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${msg}`, '_blank');
+    }
+
+    window.onload = function() {
+        let salvo = localStorage.getItem('anaModaPremium');
+        if (salvo) {
+            let c = JSON.parse(salvo);
+            
+            let textos = document.querySelectorAll('.edit-text');
+            for(let i=0; i<textos.length; i++) { if(c.textos[i]) textos[i].innerHTML = c.textos[i]; }
+            
+            let fotos = document.querySelectorAll('.upload-img');
+            let placeholders = document.querySelectorAll('.img-placeholder');
+            for(let i=0; i<fotos.length; i++) { 
+                if(c.fotos[i] && c.fotos[i] !== "") { 
+                    fotos[i].src = c.fotos[i]; 
+                    fotos[i].style.display = 'block';
+                    placeholders[i].style.display = 'none';
+                } 
+            }
+
+            if(c.corPrimary) document.documentElement.style.setProperty('--primary', c.corPrimary);
+            if(c.corBg) document.documentElement.style.setProperty('--bg', c.corBg);
+        }
+    };
+</script>
+</body>
+</html>
